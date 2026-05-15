@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id         String    @id @default(cuid())
+  email      String    @unique
+  password   String
+  createdAt  DateTime  @default(now())
+  trackers   Tracker[]
+}
+
+model Tracker {
+  id           String         @id @default(cuid())
+  user         User           @relation(fields: [userId], references: [id])
+  userId       String
+  url          String
+  name         String
+  active       Boolean        @default(true)
+  createdAt    DateTime       @default(now())
+  lastScrapeAt DateTime?
+  fields       TrackerField[]
+  snapshots    Snapshot[]
+}
+
+model TrackerField {
+  id        String   @id @default(cuid())
+  tracker   Tracker  @relation(fields: [trackerId], references: [id])
+  trackerId String
+  name      String
+  selector  String
+  type      String   @default("text")
+  isDefault Boolean  @default(false)
+}
+
+model Snapshot {
+  id         String   @id @default(cuid())
+  tracker    Tracker  @relation(fields: [trackerId], references: [id])
+  trackerId  String
+  capturedAt DateTime @default(now())
+  data       Json
+}
