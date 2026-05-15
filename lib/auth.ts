@@ -1,7 +1,8 @@
 import { cookies } from "next/headers";
 import { jwtVerify, SignJWT } from "jose";
+import { env } from "./env";
 
-const secret = new TextEncoder().encode(process.env.JWT_SECRET || "dev-secret-key-change-in-prod");
+const secret = new TextEncoder().encode(env.JWT_SECRET);
 
 export interface JWTPayload {
   userId: string;
